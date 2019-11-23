@@ -3,22 +3,24 @@
 require("dotenv")
     .config()
 
-const { User } = require("../models")
+const { User, Post } = require("../models")
 const bcrypt = require("bcrypt")
 const jsonwebtoken = require("jsonwebtoken")
 
-const generateToken = ({ id, email }) => jsonwebtoken.sign({ id, email }, process.env.JWT_SECRET, { expiresIn: "1y" })
+const generateToken = user => jsonwebtoken.sign({ id: user.id, email: user.email, is_admin: user.is_admin }, process.env.JWT_SECRET, { expiresIn: "1y" })
 
 const resolvers = {
     Query: {
         me: async (_, args, { user }) => {
-            if (!user) {
-                throw new Error("Unauthenticated")
-            }
+            return User.findByPk(user.id)
+        },
 
-            console.log(user)
+        allUsers: async (_, args, { user }) => {
+            return User.findAll()
+        },
 
-            return await User.findOne({ where: { id: user.id } })
+        post: async (_, { id }, { user }) => {
+            return Post.findByPk(id)
         },
     },
 
@@ -27,9 +29,10 @@ const resolvers = {
             const user = User.create({
                 username, email,
                 password: await bcrypt.hash(password, 10),
+                is_admin: 0,
             })
 
-            return generateToken({ id: user.id, email: user.email })
+            return generateToken(user)
         },
 
         login: async (_, { username, password }) => {
@@ -44,7 +47,35 @@ const resolvers = {
                 throw new Error("Invalid login")
             }
 
-            return generateToken({ id: user.id, email: user.email })
+            return generateToken(user)
+        },
+
+        createPost: async (_, { title, content }, { user }) => {
+            return Post.create({
+                title, content,
+                user_id: user.id,
+            })
+        },
+
+        editPost: async (_, { id, title, content }, { user }) => {
+            const post = Post.findByPk(id)
+            if (!post) {
+                throw new Error("Post not found.")
+            }
+
+            if (post.user_id !== user.id) {
+                throw new Error("Permission denied")
+            }
+
+            await post.update({ title, content })
+
+            return post
+        },
+    },
+
+    Post: {
+        author: async (post) => {
+            return User.findByPk(post.user_id)
         },
     },
 }

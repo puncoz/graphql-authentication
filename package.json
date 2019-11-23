@@ -8,6 +8,8 @@
     "sequelize:init": "sequelize init",
     "sequelize:make:migration": "sequelize model:generate --name ",
     "sequelize:migrate": "sequelize db:migrate",
+    "sequelize:migrate:rollback": "sequelize db:migrate:undo",
+    "sequelize:migrate:refresh": "sequelize db:migrate:undo:all",
     "start": "nodemon --exec node server.js"
   },
   "repository": {
@@ -24,10 +26,10 @@
   "dependencies": {
     "apollo-server-express": "^2.9.12",
     "bcrypt": "^3.0.7",
-    "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
+    "graphql": "^14.5.8",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.0.1",
     "sequelize": "^5.21.2"

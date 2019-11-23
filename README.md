@@ -28,7 +28,7 @@ $ yarn start
 ```
 6. Voila, browse the graphql url in browser.
 ```
-eg: http://localhost:8081/graphql
+eg: http://localhost:8081/api
 ```
 
 ### GraphQL
@@ -72,6 +72,7 @@ $ yarn sequelize:ini
 - Create migration file
 ```
 $ yarn sequelize:make:migration User --attributes username:string,email:string,password:string
+$ yarn sequelize:make:migration Post --attributes user_id:integer,title:string,content:string
 ```
 
 - Run migration

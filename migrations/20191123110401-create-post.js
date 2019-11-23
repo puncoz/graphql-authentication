@@ -1,25 +1,22 @@
 "use strict"
-
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable("Users", {
+        return queryInterface.createTable("Posts", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            username: {
+            user_id: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+            },
+            title: {
                 type: Sequelize.STRING,
             },
-            email: {
+            content: {
                 type: Sequelize.STRING,
-            },
-            password: {
-                type: Sequelize.STRING,
-            },
-            is_admin: {
-                type: Sequelize.BOOLEAN
             },
             createdAt: {
                 allowNull: false,
@@ -31,8 +28,7 @@ module.exports = {
             },
         })
     },
-  
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable("Users")
+        return queryInterface.dropTable("Posts")
     },
 }
